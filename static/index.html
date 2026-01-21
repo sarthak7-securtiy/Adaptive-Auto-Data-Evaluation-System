@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AADES | Adaptive Data Analysis & Evaluation System</title>
+    <meta name="description"
+        content="Professional data analytics platform for automated dataset analysis and intelligent visualization.">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside>
+            <div class="logo">
+                <div class="logo-icon">A</div>
+                <div class="logo-text">
+                    <div class="logo-title">AADES</div>
+                    <div class="logo-subtitle">Analytics Platform</div>
+                </div>
+            </div>
+
+            <nav class="nav-links">
+                <div class="nav-section-title">Workflow</div>
+                <li class="nav-item active" data-target="upload-section">
+                    <i data-lucide="upload"></i>
+                    <span>Data Source</span>
+                </li>
+                <li class="nav-item" data-target="preview-section">
+                    <i data-lucide="database"></i>
+                    <span>Data Preview</span>
+                </li>
+                <li class="nav-item" data-target="analysis-section">
+                    <i data-lucide="settings-2"></i>
+                    <span>Configure Analysis</span>
+                </li>
+                <li class="nav-item" data-target="results-section">
+                    <i data-lucide="bar-chart-2"></i>
+                    <span>Visualizations</span>
+                </li>
+                <li class="nav-item" data-target="insights-section">
+                    <i data-lucide="brain"></i>
+                    <span>AI Insights</span>
+                </li>
+
+                <div class="nav-section-title" style="margin-top: 1.5rem;">Actions</div>
+                <li class="nav-item" id="reset-btn" style="color: var(--accent);">
+                    <i data-lucide="refresh-cw"></i>
+                    <span>Reset Session</span>
+                </li>
+            </nav>
+
+            <div class="nav-footer">
+                <div style="font-size: 0.75rem; color: var(--text-muted); text-align: center;">
+                    v1.0.0 • ML-Powered
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main>
+            <!-- Top Bar -->
+            <div class="top-bar">
+                <div class="breadcrumb" id="breadcrumb">
+                    <i data-lucide="home" style="width: 14px; height: 14px;"></i>
+                    <span>Workspace</span>
+                    <i data-lucide="chevron-right" style="width: 14px; height: 14px;"></i>
+                    <span id="breadcrumb-current">Data Source</span>
+                </div>
+                <div style="display: flex; gap: 0.75rem; align-items: center;">
+                    <button class="theme-toggle" id="theme-toggle" title="Toggle theme">
+                        <i data-lucide="sun" id="theme-icon"></i>
+                    </button>
+                    <button class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem;">
+                        <i data-lucide="help-circle" style="width: 16px; height: 16px;"></i>
+                        Help
+                    </button>
+                </div>
+            </div>
+
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1 class="page-title" id="page-title">Connect Your Data Source</h1>
+                <p class="page-desc" id="page-desc">Upload your dataset to begin automated analysis and intelligent
+                    visualization.</p>
+            </div>
+
+            <!-- Content Area -->
+            <div class="content-area">
+                <!-- Upload Section -->
+                <section id="upload-section" class="active">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="upload-zone" id="drop-zone">
+                                <i data-lucide="file-up" class="upload-icon"></i>
+                                <h2>Drag and drop your dataset here</h2>
+                                <p>or click to browse from your computer</p>
+                                <input type="file" id="file-input" hidden accept=".csv,.xlsx,.xls,.json">
+                                <div class="supported-formats">
+                                    <span class="format-badge">CSV</span>
+                                    <span class="format-badge">XLSX</span>
+                                    <span class="format-badge">JSON</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Preview Section -->
+                <section id="preview-section">
+                    <div class="stats-grid" id="data-stats"></div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Dataset Overview</h3>
+                            <span class="badge badge-primary" id="row-count">0 Rows</span>
+                        </div>
+                        <div class="card-body" style="padding: 0;">
+                            <div class="table-container" id="preview-table"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Analysis Configuration Section -->
+                <section id="analysis-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Analysis Configuration</h3>
+                        </div>
+                        <div class="card-body">
+                            <p style="margin-bottom: 2rem; color: var(--text-secondary);">
+                                Configure your analysis parameters and visualization preferences.
+                            </p>
+
+                            <div class="config-grid">
+                                <div class="form-group">
+                                    <label class="form-label">Analysis Type</label>
+                                    <select class="form-control" id="analysis-type">
+                                        <option value="descriptive">Descriptive Statistics</option>
+                                        <option value="correlation">Correlation Analysis</option>
+                                        <option value="clustering">Pattern Clustering (ML)</option>
+                                        <option value="trend">Time-Series Trends</option>
+                                        <option value="prediction">Predictive Modeling (ML)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Visualization Preference</label>
+                                    <select class="form-control" id="viz-type">
+                                        <option value="auto">Auto-Recommend (Smart)</option>
+                                        <option value="distribution">Distribution Charts</option>
+                                        <option value="relational">Relational Plots</option>
+                                        <option value="categorical">Categorical Bars</option>
+                                        <option value="hierarchical">Hierarchical View</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div style="margin-top: 2rem;">
+                                <button class="btn btn-primary" id="run-analysis-btn">
+                                    <i data-lucide="play"></i>
+                                    Run Analysis
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Results Section -->
+                <section id="results-section">
+                    <div class="chart-grid">
+                        <div class="chart-card full-width">
+                            <div class="chart-header">
+                                <h3 class="chart-title">Primary Visualization</h3>
+                            </div>
+                            <div class="chart-wrapper">
+                                <canvas id="mainChart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="chart-card">
+                            <div class="chart-header">
+                                <h3 class="chart-title">Distribution Analysis</h3>
+                            </div>
+                            <div class="chart-wrapper" style="height: 280px;">
+                                <canvas id="distChart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="chart-card">
+                            <div class="chart-header">
+                                <h3 class="chart-title">Data Relationships</h3>
+                            </div>
+                            <div
+                                style="height: 280px; display: flex; align-items: center; justify-content: center; color: var(--text-muted);">
+                                <div style="text-align: center;">
+                                    <i data-lucide="activity"
+                                        style="width: 48px; height: 48px; margin-bottom: 1rem;"></i>
+                                    <p>Correlation matrix visualization</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 2rem; display: flex; gap: 1rem;">
+                        <button class="btn btn-success" id="export-pdf-btn">
+                            <i data-lucide="download"></i>
+                            Export Report
+                        </button>
+                        <button class="btn btn-secondary" id="share-results-btn">
+                            <i data-lucide="share-2"></i>
+                            Share Analysis
+                        </button>
+                    </div>
+                </section>
+
+                <!-- Insights Section -->
+                <section id="insights-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                <div
+                                    style="background: var(--primary-light); width: 36px; height: 36px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; color: var(--primary);">
+                                    <i data-lucide="sparkles"></i>
+                                </div>
+                                <h3 class="card-title">AI-Generated Insights</h3>
+                            </div>
+                            <span class="badge badge-success">ML-Powered</span>
+                        </div>
+                        <div class="card-body">
+                            <div id="insights-list"></div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script src="/static/js/app.js"></script>
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+
+</html>
