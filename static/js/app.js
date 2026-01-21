@@ -3,7 +3,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const state = {
         currentSection: 'upload-section',
         dataset: null,
-        analysisResults: null
+        analysisResults: null,
+        sessionId: null
     };
 
     // UI Elements
@@ -96,6 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (data.status === 'success') {
                 state.dataset = data.summary;
+                state.sessionId = data.session_id;
                 updatePreviewUI(data.summary);
                 navigateTo('preview-section');
             } else {
@@ -191,7 +193,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch('/api/analyze', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ type: analysisType, viz: vizType })
+                body: JSON.stringify({
+                    type: analysisType,
+                    viz: vizType,
+                    session_id: state.sessionId
+                })
             });
 
             let data;
@@ -233,13 +239,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Logic to determine primary chart type
         let chartType = 'bar';
-        if (vizPref === 'distribution') chartType = 'pie';
+        if (vizPref === 'distribution') {
+            // If too many unique values, use bar/histogram view instead of pie
+            chartType = labels.length > 8 ? 'bar' : 'pie';
+        }
         else if (vizPref === 'relational') chartType = 'line';
         else if (vizPref === 'hierarchical') chartType = 'polarArea';
         else if (vizPref === 'categorical') chartType = 'bar';
         else {
             // Auto recommendation
-            chartType = analysis.type === 'prediction' || analysis.type === 'trend' ? 'line' : 'bar';
+            if (analysis.type === 'prediction' || analysis.type === 'trend') chartType = 'line';
+            else if (analysis.type === 'clustering') chartType = 'doughnut';
+            else chartType = 'bar';
         }
 
         window.mainChartInst = new Chart(ctx, {

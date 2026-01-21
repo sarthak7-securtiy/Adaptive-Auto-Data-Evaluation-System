@@ -1,10 +1,5 @@
 # 🧠 Adaptive Auto Data Evaluation System (AADES)
 
-[![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)](https://fastapi.tiangolo.com/)
-[![Pandas](https://img.shields.io/badge/Pandas-150458?style=for-the-badge&logo=pandas&logoColor=white)](https://pandas.pydata.org/)
-[![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
-
 **AADES** is a state-of-the-art, data-agnostic analytical platform that eliminates the need for manual data preprocessing and fixed parameters. It empowers researchers and analysts to transform raw datasets into actionable insights through an automated, intelligent evaluation pipeline.
 
 ---

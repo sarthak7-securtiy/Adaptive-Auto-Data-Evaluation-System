@@ -12,10 +12,10 @@ import warnings
 
 warnings.filterwarnings('ignore')
 
-# Global store for the current active dataset (Demo purposes)
-active_session = {
-    "df": None
-}
+import uuid
+
+# Global store for active sessions (In-memory for demo; use Redis/DB for production)
+sessions = {}
 
 app = FastAPI(title="Adaptive Auto Data Evaluation System")
 
@@ -64,10 +64,11 @@ async def upload_file(file: UploadFile = File(...)):
             "preview": preview_df.replace({np.nan: None}).to_dict(orient='records')
         }
         
-        # Store for analysis
-        active_session["df"] = df
+        # generate session id
+        session_id = str(uuid.uuid4())
+        sessions[session_id] = df
         
-        return JSONResponse(content={"status": "success", "summary": summary})
+        return JSONResponse(content={"status": "success", "session_id": session_id, "summary": summary})
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -75,11 +76,13 @@ async def upload_file(file: UploadFile = File(...)):
 @app.post("/api/analyze")
 async def analyze_data(request: dict):
     try:
-        df = active_session.get("df")
+        session_id = request.get("session_id")
+        df = sessions.get(session_id)
+        
         if df is None:
             return JSONResponse(
                 status_code=400, 
-                content={"status": "error", "message": "No active dataset. Please re-upload your file."}
+                content={"status": "error", "message": "Session expired or invalid. Please re-upload your file."}
             )
         
         analysis_type = request.get("type", "descriptive")
@@ -105,28 +108,38 @@ async def analyze_data(request: dict):
                 }
                 insights.append({"type": "ml", "text": f"K-Means identified {len(counts)} patterns in the numeric data."})
 
-        elif analysis_type == "prediction" and numeric_df.shape[1] >= 1:
-            if len(numeric_df) < 5:
-                insights.append({"type": "warning", "text": "Predictive modeling requires more data points for accuracy."})
+        elif analysis_type == "prediction" and not numeric_df.empty:
+            if len(numeric_df) < 5 or numeric_df.shape[1] < 2:
+                insights.append({"type": "warning", "text": "Predictive modeling requires multiple numeric columns and sufficient rows."})
             else:
-                X = np.arange(len(numeric_df)).reshape(-1, 1)
-                y = numeric_df.iloc[:, 0].values
+                # Use the last column as target, others as features
+                X = numeric_df.iloc[:, :-1].values
+                y = numeric_df.iloc[:, -1].values
+                target_name = numeric_df.columns[-1]
+                
                 model = LinearRegression().fit(X, y)
                 score = model.score(X, y)
+                
+                # Predict on same data for visualization (Actual vs Predicted comparison could be better, 
+                # but for simplicity we show the first 10 actual values of target)
                 chart_data = {
-                    "labels": [f"Row {i}" for i in range(min(10, len(y)))],
+                    "labels": [f"Sample {i+1}" for i in range(min(10, len(y)))],
                     "values": [float(v) for v in y[:10]]
                 }
-                insights.append({"type": "ml", "text": f"Linear Regression fit achieved (R²={score:.2f})."})
+                insights.append({"type": "ml", "text": f"Linear Regression model trained to predict '{target_name}' (R²={score:.2f})."})
 
         elif analysis_type == "correlation" and not numeric_df.empty:
             corr = numeric_df.corr()
             if not corr.empty and len(numeric_df.columns) > 1:
-                top_corr = corr.unstack().sort_values(ascending=False)
-                top_corr = top_corr[top_corr < 1].head(1)
-                if not top_corr.empty:
-                    f1, f2 = top_corr.index[0]
-                    insights.append({"type": "stat", "text": f"Strong correlation between '{f1}' and '{f2}' (r={top_corr.values[0]:.2f})."})
+                # Find strongest pair
+                unstacked = corr.abs().unstack()
+                # Remove self correlations and duplicates
+                pairs = unstacked.sort_values(ascending=False)
+                pairs = pairs[pairs < 1.0] 
+                
+                if not pairs.empty:
+                    (f1, f2), val = pairs.index[0], pairs.iloc[0]
+                    insights.append({"type": "stat", "text": f"Strongest correlation found between '{f1}' and '{f2}' (r={val:.2f})."})
             
             chart_data = {
                 "labels": [str(c) for c in numeric_df.columns[:5]],
