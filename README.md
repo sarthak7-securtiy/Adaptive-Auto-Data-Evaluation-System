@@ -21,7 +21,7 @@
 - [⚡ Quick Start](#-quick-start)
 - [🎓 Capabilities](#-capabilities)
 - [🔮 Future Enhancements](#-future-enhancements)
-- [📞 Contact](#-contact)
+
 - [📄 License](#-license)
 
 ---
@@ -143,14 +143,6 @@ The analytical engine (`main.py`) supports several modes of operation depending 
 
 ---
 
-## 📞 Contact
-
-| Platform | Link |
-|----------|------|
-| **LinkedIn** | [Sarthak's LinkedIn Profile](https://linkedin.com/in/your-profile) |
-| **GitHub** | [github.com/sarthak7-securtiy](https://github.com/sarthak7-securtiy) |
-
----
 
 ## 📄 License
 
