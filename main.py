@@ -10,26 +10,97 @@ import warnings
 
 warnings.filterwarnings('ignore')
 
-st.set_page_config(page_title="AADES | Analytics Platform", layout="wide", page_icon="⚡")
+st.set_page_config(page_title="AADES | Analytics Platform", layout="wide", page_icon="✨")
 
-# Custom CSS for glowing effects and modern typography
+# -----------------
+# Unique Glassmorphism & Typography CSS
+# -----------------
 st.markdown("""
 <style>
-    .reportview-container {
-        margin-top: -2em;
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
+
+    /* Global Typography */
+    html, body, [class*="st-"] {
+        font-family: 'Outfit', sans-serif !important;
     }
-    #MainMenu {visibility: hidden;}
-    .stDeployButton {display:none;}
-    footer {visibility: hidden;}
+    
+    /* Animated Gradient Background */
+    .stApp {
+        background: linear-gradient(-45deg, #0e1117, #151a28, #0a111a, #0e1117);
+        background-size: 400% 400%;
+        animation: gradientBG 15s ease infinite;
+    }
+    @keyframes gradientBG {
+        0% {background-position: 0% 50%;}
+        50% {background-position: 100% 50%;}
+        100% {background-position: 0% 50%;}
+    }
+
+    /* Glassmorphism for Metrics and Elements */
+    div[data-testid="metric-container"] {
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 16px;
+        padding: 1.5rem;
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+    }
+    div[data-testid="metric-container"]:hover {
+        transform: translateY(-5px);
+        border-color: rgba(0, 240, 255, 0.4);
+        box-shadow: 0 12px 40px 0 rgba(0, 240, 255, 0.1);
+    }
+    
+    /* Header styling */
     h1 {
         text-align: center;
-        background: -webkit-linear-gradient(45deg, #00F0FF, #0055FF);
+        background: -webkit-linear-gradient(45deg, #00F0FF, #8A2BE2);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         margin-bottom: 0.5em;
+        font-weight: 800;
+        letter-spacing: -1px;
     }
-    .st-emotion-cache-16idsys p {
-        font-size: 1.1rem;
+    
+    /* Hide default elements */
+    #MainMenu {visibility: hidden;}
+    .stDeployButton {display:none;}
+    footer {visibility: hidden;}
+    
+    /* Sidebar polish */
+    [data-testid="stSidebar"] {
+        background: rgba(10, 13, 20, 0.85);
+        backdrop-filter: blur(20px);
+        border-right: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    /* Tabs styling */
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 2rem;
+        border-bottom-color: rgba(255, 255, 255, 0.05);
+    }
+    .stTabs [data-baseweb="tab"] {
+        height: 50px;
+        white-space: pre-wrap;
+        background-color: transparent;
+        border-radius: 0;
+        color: #718096;
+        font-weight: 600;
+        font-family: 'Outfit', sans-serif;
+    }
+    .stTabs [aria-selected="true"] {
+        color: #00F0FF !important;
+        border-bottom: 2px solid #00F0FF !important;
+    }
+    
+    /* Dataframe glass look */
+    [data-testid="stDataFrame"] {
+        background: rgba(255, 255, 255, 0.01);
+        border-radius: 12px;
+        padding: 10px;
+        border: 1px solid rgba(255,255,255,0.05);
     }
 </style>
 """, unsafe_allow_html=True)
@@ -38,7 +109,7 @@ st.markdown("""
 # Sidebar Content
 # -----------------
 with st.sidebar:
-    st.markdown("## ⚡ **AADES**")
+    st.markdown("## ✨ **AADES**")
     st.markdown("Adaptive Data Analysis & Evaluation System")
     st.markdown("---")
     
@@ -56,7 +127,7 @@ with st.sidebar:
 st.title("AADES Analytics Dashboard")
 
 if uploaded_file is None:
-    st.markdown("<h4 style='text-align: center; color: #888;'>Please upload a dataset from the sidebar to begin.</h4>", unsafe_allow_html=True)
+    st.markdown("<h4 style='text-align: center; color: #555; font-weight: 400; margin-top: 50px;'>Please upload a dataset from the sidebar to begin.</h4>", unsafe_allow_html=True)
     st.stop()
 
 # Load Data
@@ -78,6 +149,18 @@ except Exception as e:
 # Organize with Tabs
 tab_overview, tab_analysis, tab_ml = st.tabs(["📊 Data Overview", "📈 Advanced Analysis", "🤖 ML & Prediction"])
 
+# Reusable minimalist plotly layout
+def apply_minimal_layout(fig):
+    fig.update_layout(
+        plot_bgcolor='rgba(0,0,0,0)', 
+        paper_bgcolor='rgba(0,0,0,0)',
+        font_family="Outfit",
+        font_color="#A0AEC0",
+        xaxis=dict(showgrid=False, zeroline=False),
+        yaxis=dict(showgrid=True, gridcolor='rgba(255,255,255,0.05)', zeroline=False)
+    )
+    return fig
+
 with tab_overview:
     st.markdown("### Dataset Summary")
     
@@ -89,10 +172,11 @@ with tab_overview:
     with col3:
         st.metric(label="Missing Values", value=f"{df.isnull().sum().sum():,}")
         
-    st.markdown("---")
+    st.markdown("<br>", unsafe_allow_html=True)
     st.markdown("### Data Preview")
     st.dataframe(df.head(15), use_container_width=True)
     
+    st.markdown("<br>", unsafe_allow_html=True)
     st.markdown("### Data Types & Missing Information")
     info_df = pd.DataFrame({
         'Data Type': df.dtypes.astype(str),
@@ -116,14 +200,19 @@ with tab_analysis:
             feature_to_plot = st.selectbox("Select Feature to Visualize", options=numeric_df.columns)
             fig_dist = px.histogram(numeric_df, x=feature_to_plot, marginal="box", 
                                     color_discrete_sequence=['#00F0FF'], title=f"Distribution of {feature_to_plot}")
-            fig_dist.update_layout(plot_bgcolor='rgba(0,0,0,0)', paper_bgcolor='rgba(0,0,0,0)')
+            apply_minimal_layout(fig_dist)
             st.plotly_chart(fig_dist, use_container_width=True)
             
         with col_corr:
             st.markdown("#### Correlation Heatmap")
             corr = numeric_df.corr()
             fig_corr = px.imshow(corr, text_auto=".2f", aspect="auto", color_continuous_scale="Blues", title="Feature Correlations")
-            fig_corr.update_layout(plot_bgcolor='rgba(0,0,0,0)', paper_bgcolor='rgba(0,0,0,0)')
+            fig_corr.update_layout(
+                plot_bgcolor='rgba(0,0,0,0)', 
+                paper_bgcolor='rgba(0,0,0,0)',
+                font_family="Outfit",
+                font_color="#A0AEC0"
+            )
             st.plotly_chart(fig_corr, use_container_width=True)
 
 with tab_ml:
@@ -154,20 +243,24 @@ with tab_ml:
                 with c1:
                     cluster_counts = clustered_df['Cluster'].value_counts().reset_index()
                     cluster_counts.columns = ['Cluster', 'Count']
-                    fig_pie = px.pie(cluster_counts, names='Cluster', values='Count', hole=0.4, 
+                    fig_pie = px.pie(cluster_counts, names='Cluster', values='Count', hole=0.5, 
                                      color_discrete_sequence=px.colors.sequential.Teal, title="Cluster Distribution")
-                    fig_pie.update_layout(plot_bgcolor='rgba(0,0,0,0)', paper_bgcolor='rgba(0,0,0,0)')
+                    fig_pie.update_layout(
+                        plot_bgcolor='rgba(0,0,0,0)', 
+                        paper_bgcolor='rgba(0,0,0,0)',
+                        font_family="Outfit",
+                        font_color="#A0AEC0"
+                    )
                     st.plotly_chart(fig_pie, use_container_width=True)
                 
                 with c2:
                     if len(numeric_df.columns) >= 2:
-                        # Plot first two features as scatter
                         x_feat = numeric_df.columns[0]
                         y_feat = numeric_df.columns[1]
                         fig_scatter = px.scatter(clustered_df, x=x_feat, y=y_feat, color="Cluster", 
                                                  title=f"{x_feat} vs {y_feat} (Clustered)",
                                                  color_discrete_sequence=px.colors.qualitative.Set3)
-                        fig_scatter.update_layout(plot_bgcolor='rgba(0,0,0,0)', paper_bgcolor='rgba(0,0,0,0)')
+                        apply_minimal_layout(fig_scatter)
                         st.plotly_chart(fig_scatter, use_container_width=True)
                         
         elif ml_task == "Predictive Modeling (Linear Regression)":
@@ -194,9 +287,9 @@ with tab_ml:
                 })
                 
                 fig_line = go.Figure()
-                fig_line.add_trace(go.Scatter(y=compare_df['Actual'], mode='lines', name='Actual', line=dict(color='#0055FF')))
-                fig_line.add_trace(go.Scatter(y=compare_df['Predicted'], mode='lines', name='Predicted', line=dict(color='#00F0FF', dash='dash')))
+                fig_line.add_trace(go.Scatter(y=compare_df['Actual'], mode='lines', name='Actual', line=dict(color='#8A2BE2', width=3)))
+                fig_line.add_trace(go.Scatter(y=compare_df['Predicted'], mode='lines', name='Predicted', line=dict(color='#00F0FF', dash='dash', width=3)))
                 fig_line.update_layout(title="Actual vs Predicted (First 50 Samples)", 
-                                       plot_bgcolor='rgba(0,0,0,0)', paper_bgcolor='rgba(0,0,0,0)',
                                        xaxis_title="Sample Index", yaxis_title="Value")
+                apply_minimal_layout(fig_line)
                 st.plotly_chart(fig_line, use_container_width=True)
