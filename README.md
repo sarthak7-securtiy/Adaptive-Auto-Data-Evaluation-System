@@ -110,15 +110,13 @@ graph TD
    pip install -r requirements.txt
    ```
 
-4. **Run the application**
+4. **Run the Streamlit application**
    ```bash
-   python main.py
-   # OR
-   uvicorn main:app --reload
+   python -m streamlit run main.py
    ```
 
 5. **Access the Dashboard**
-   Open your browser and navigate to: `http://localhost:8000`
+   Open your browser and navigate to: `http://localhost:8501`
 
 ---
 

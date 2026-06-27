@@ -3,6 +3,9 @@ import pandas as pd
 import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
+import os
+os.environ["JOBLIB_START_METHOD"] = "threading"
+os.environ["OMP_NUM_THREADS"] = "1"
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LinearRegression
@@ -11,116 +14,102 @@ import requests
 from streamlit_lottie import st_lottie
 
 warnings.filterwarnings('ignore')
-
 st.set_page_config(page_title="AADES | Analytics Platform", layout="wide", page_icon="✨")
 
 # -----------------
 # Ultra-Premium CSS (Vercel/SaaS Inspired)
 # -----------------
-st.markdown("""
+st.markdown(f"""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
+/* Centralized CSS variables */
+:root {{
+  --bg-color: {'#000000' if st.session_state.get('dark_mode', True) else '#f0f0f0'};
+  --card-bg: {'#111111' if st.session_state.get('dark_mode', True) else '#ffffff'};
+  --text-color: {'#ffffff' if st.session_state.get('dark_mode', True) else '#000000'};
+  --accent-color: #00F0FF;
+}}
 
-    /* Global Typography */
-    html, body, [class*="st-"] {
-        font-family: 'Outfit', sans-serif !important;
-    }
-    
-    /* Pitch Black Background */
-    .stApp {
-        background-color: #000000;
-    }
+/* Global Styles */
+html, body, [class*="st-"] {{
+  font-family: 'Outfit', sans-serif !important;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}}
 
-    /* Glassmorphism/Dark Cards for Metrics and Elements */
-    div[data-testid="metric-container"] {
-        background: #111111;
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 12px;
-        padding: 1.5rem;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-        transition: all 0.3s ease;
-    }
-    div[data-testid="metric-container"]:hover {
-        transform: translateY(-5px);
-        border-color: rgba(0, 240, 255, 0.5);
-        box-shadow: 0 10px 30px rgba(0, 240, 255, 0.15);
-    }
-    
-    /* Hero Title styling */
-    h1 {
-        text-align: center;
-        background: -webkit-linear-gradient(45deg, #00F0FF, #8A2BE2, #0055FF);
-        background-size: 300%;
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        animation: textGradient 5s ease infinite;
-        margin-bottom: 0.2em;
-        font-weight: 800;
-        letter-spacing: -1px;
-        font-size: 3.5rem !important;
-    }
-    @keyframes textGradient {
-        0% {background-position: 0% 50%;}
-        50% {background-position: 100% 50%;}
-        100% {background-position: 0% 50%;}
-    }
-    
-    .subtitle {
-        text-align: center;
-        color: #888888;
-        font-size: 1.2rem;
-        margin-bottom: 2rem;
-        font-weight: 300;
-    }
-    
-    /* Hide default elements */
-    #MainMenu {visibility: hidden;}
-    .stDeployButton {display:none;}
-    footer {visibility: hidden;}
-    
-    /* Sidebar polish */
-    [data-testid="stSidebar"] {
-        background: #0a0a0a;
-        border-right: 1px solid rgba(255, 255, 255, 0.05);
-    }
-    
-    /* Pill Tabs styling */
-    .stTabs [data-baseweb="tab-list"] {
-        gap: 10px;
-        background-color: #111111;
-        padding: 8px;
-        border-radius: 50px;
-        border: 1px solid rgba(255, 255, 255, 0.05);
-        display: flex;
-        justify-content: center;
-    }
-    .stTabs [data-baseweb="tab"] {
-        height: 40px;
-        background-color: transparent;
-        border-radius: 50px !important;
-        color: #888888;
-        font-weight: 600;
-        padding: 0 25px;
-        transition: all 0.3s ease;
-    }
-    .stTabs [aria-selected="true"] {
-        color: #000000 !important;
-        background: linear-gradient(90deg, #00F0FF, #0055FF) !important;
-        box-shadow: 0 4px 15px rgba(0, 240, 255, 0.4) !important;
-    }
-    .stTabs [data-baseweb="tab-highlight"] {
-        display: none;
-    }
-    
-    /* Dataframe glass look */
-    [data-testid="stDataFrame"] {
-        background: #111111;
-        border-radius: 12px;
-        padding: 10px;
-        border: 1px solid rgba(255,255,255,0.05);
-    }
+/* Background */
+.stApp {{
+  background-color: var(--bg-color);
+}}
+
+/* Metric Card */
+.metric-card {{
+  background: var(--card-bg);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}}
+.metric-card:hover {{
+  transform: translateY(-5px);
+  border-color: rgba(0,240,255,0.5);
+  box-shadow: 0 10px 30px rgba(0,240,255,0.15);
+}}
+.metric-icon {{font-size: 1.5rem;}}
+.metric-info {{display: flex; flex-direction: column;}}
+.metric-label {{font-size: 0.9rem; opacity: 0.8;}}
+.metric-value {{font-size: 1.3rem; font-weight: 600;}}
+
+/* Tabs */
+.stTabs [data-baseweb="tab-list"] {{
+  gap: 10px;
+  background-color: var(--card-bg);
+  padding: 8px;
+  border-radius: 50px;
+  border: 1px solid rgba(255,255,255,0.05);
+  display: flex;
+  justify-content: center;
+}}
+.stTabs [data-baseweb="tab"] {{
+  height: 40px;
+  background-color: transparent;
+  border-radius: 50px !important;
+  color: #888888;
+  font-weight: 600;
+  padding: 0 25px;
+  transition: all 0.3s ease;
+}}
+.stTabs [aria-selected="true"] {{
+  color: #000000 !important;
+  background: linear-gradient(90deg, #00F0FF, #0055FF) !important;
+  box-shadow: 0 4px 15px rgba(0,240,255,0.4) !important;
+}}
+.stTabs [data-baseweb="tab-highlight"] {{display: none;}}
+
+/* Dataframe */
+[data-testid="stDataFrame"] {{
+  background: var(--card-bg);
+  border-radius: 12px;
+  padding: 10px;
+  border: 1px solid rgba(255,255,255,0.05);
+}}
+
+/* Sidebar */
+[data-testid="stSidebar"] {{
+  background: var(--card-bg);
+  border-right: 1px solid rgba(255,255,255,0.05);
+}}
+
+/* Hide default elements */
+#MainMenu {{visibility: hidden;}}
+.stDeployButton {{display:none;}}
+footer {{visibility: hidden;}}
 </style>
 """, unsafe_allow_html=True)
+
 
 def load_lottieurl(url: str):
     try:
@@ -135,6 +124,12 @@ def load_lottieurl(url: str):
 # Sidebar Content
 # -----------------
 with st.sidebar:
+    # Dark mode toggle
+    if 'dark_mode' not in st.session_state:
+        st.session_state['dark_mode'] = True
+    dark_mode = st.checkbox('🌙 Dark mode', value=st.session_state['dark_mode'], key='dark_mode_toggle')
+    st.session_state['dark_mode'] = dark_mode
+    
     st.markdown("## ✨ **AADES**")
     st.markdown("<span style='color:#888;'>Adaptive Data Analysis System</span>", unsafe_allow_html=True)
     st.markdown("---")
@@ -201,13 +196,40 @@ def apply_minimal_layout(fig):
 with tab_overview:
     st.markdown("<br>", unsafe_allow_html=True)
     
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        st.metric(label="Total Rows", value=f"{df.shape[0]:,}")
-    with col2:
-        st.metric(label="Total Features", value=df.shape[1])
-    with col3:
-        st.metric(label="Missing Values", value=f"{df.isnull().sum().sum():,}")
+    # Metric cards using custom HTML
+    st.markdown(f"""
+    <div class="metric-card">
+      <div class="metric-icon">📊</div>
+      <div class="metric-info">
+        <div class="metric-label">Total Rows</div>
+        <div class="metric-value">{df.shape[0]:,}</div>
+      </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown(f"""
+    <div class="metric-card">
+      <div class="metric-icon">📁</div>
+      <div class="metric-info">
+        <div class="metric-label">Total Features</div>
+        <div class="metric-value">{df.shape[1]}</div>
+      </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown(f"""
+    <div class="metric-card">
+      <div class="metric-icon">⚠️</div>
+      <div class="metric-info">
+        <div class="metric-label">Missing Values</div>
+        <div class="metric-value">{df.isnull().sum().sum():,}</div>
+      </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # Export button for data preview
+    csv = df.to_csv(index=False).encode('utf-8')
+    st.download_button(label="Download Data CSV", data=csv, file_name='data_preview.csv', mime='text/csv')
         
     st.markdown("<br>", unsafe_allow_html=True)
     st.markdown("### Data Preview")
