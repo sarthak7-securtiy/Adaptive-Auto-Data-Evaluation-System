@@ -21,7 +21,6 @@
 - [⚡ Quick Start](#-quick-start)
 - [🎓 Capabilities](#-capabilities)
 - [🔮 Future Enhancements](#-future-enhancements)
-
 - [📄 License](#-license)
 
 ---
