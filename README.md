@@ -1,146 +1,240 @@
-# 📊 AADES | Adaptive Auto Data Evaluation System
-
 <div align="center">
-  <!-- Badges -->
-  <a href="https://fastapi.tiangolo.com/" target="_blank"><img src="https://img.shields.io/badge/FastAPI-0.100+-009688?logo=fastapi&logoColor=white" alt="FastAPI"/></a>
-  <a href="https://www.python.org/" target="_blank"><img src="https://img.shields.io/badge/Python-3.10%2B-blue?logo=python&logoColor=white" alt="Python"/></a>
-  <a href="https://pandas.pydata.org/" target="_blank"><img src="https://img.shields.io/badge/Pandas-2.0+-150458?logo=pandas&logoColor=white" alt="Pandas"/></a>
-  <a href="https://scikit-learn.org/" target="_blank"><img src="https://img.shields.io/badge/Scikit--Learn-1.0+-F7931E?logo=scikit-learn&logoColor=white" alt="Scikit-Learn"/></a>
-  <a href="https://www.chartjs.org/" target="_blank"><img src="https://img.shields.io/badge/Chart.js-4.0+-FF6384?logo=chartdotjs&logoColor=white" alt="Chart.js"/></a>
-  <a href="https://github.com/sarthak7-securtiy/adaptive-data-analysis-system" target="_blank"><img src="https://img.shields.io/badge/License-MIT-yellow" alt="License"/></a>
+
+# ⚡ AADES
+### Adaptive Auto Data Evaluation System
+
+**Turn raw datasets into actionable intelligence — zero code required.**
+
+<br/>
+
+![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![Streamlit](https://img.shields.io/badge/Streamlit-1.35+-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)
+![Scikit--Learn](https://img.shields.io/badge/scikit--learn-1.4+-F7931E?style=for-the-badge&logo=scikit-learn&logoColor=white)
+![Plotly](https://img.shields.io/badge/Plotly-5.x-3F4F75?style=for-the-badge&logo=plotly&logoColor=white)
+![Pandas](https://img.shields.io/badge/Pandas-2.x-150458?style=for-the-badge&logo=pandas&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-22d3ee?style=for-the-badge)
+
+<br/>
+
+> **v2.0** — Complete UI overhaul · Orbital animations · Glassmorphism cards · Residual plots · Elbow curves
+
 </div>
 
 ---
 
-## 📖 Table of Contents
+## 📌 Overview
 
-- [✨ Overview](#-overview)
-- [🚀 Features](#-features)
-- [🛠️ Tech Stack](#-tech-stack)
-- [🏗️ Architecture](#-architecture)
-- [⚡ Quick Start](#-quick-start)
-- [🎓 Capabilities](#-capabilities)
-- [🔮 Future Enhancements](#-future-enhancements)
-- [📄 License](#-license)
+**AADES** is an intelligent, no-code data analytics platform built with Streamlit. Upload any structured dataset — CSV, Excel, or JSON — and the platform automatically:
+
+- Profiles your data schema and quality
+- Generates interactive statistical visualisations
+- Runs unsupervised machine learning (K-Means clustering)
+- Trains and evaluates a predictive regression model
+- Produces a residuals analysis and feature coefficient chart
+
+All in seconds. No pandas knowledge needed. No Jupyter notebook required.
 
 ---
 
-## ✨ Overview
+## 🖥 UI Preview
 
-The **Adaptive Auto Data Evaluation System (AADES)** is a high-performance, intelligent data analytics platform designed to democratize data science. It enables users to simply upload raw datasets and instantly receive actionable insights, statistical breakdowns, and machine learning-powered patterns without writing a single line of code.
+The interface is designed to production-grade, recruiter-ready standards:
 
-Unlike static dashboards, AADES adapts to your data. Whether you uploaded sales figures, sensor logs, or employee records, the system identifies column types, detects relationships, and automatically configures the most relevant analysis pipelines—ranging from basic descriptive stats to K-Means clustering and predictive modeling.
+| Feature | Details |
+|---|---|
+| 🌌 **Background** | Animated dot-grid mesh with multi-layer radial gradient glows |
+| 🔝 **Navbar** | Breadcrumb route bar with live status badges |
+| 📣 **Hero Section** | Space Grotesk fluid typography with cyan→blue→violet gradient |
+| 🌀 **Empty State** | Three-ring CSS orbital animation system with glowing orbiters |
+| 💳 **KPI Cards** | Glassmorphism, per-color glow, animated fill-bar on mount |
+| 🗂 **Sidebar** | Spinning ring logo, live pulse dots, JetBrains Mono tech stack |
+| 📊 **Charts** | Histogram, correlation heatmap, box plots, scatter matrix, residuals, coefficients |
+| 🤖 **ML Output** | Large R² score card, actual vs predicted, elbow curve, coefficient bar chart |
 
 ---
 
 ## 🚀 Features
 
-| ✅ | Feature | Description |
+### 📋 Overview Tab
+- **Data Preview** — First 15 rows, full-width table
+- **Schema Inspector** — Dtype, missing count, missing %, unique count, sample value per column
+- **Descriptive Statistics** — Transposed `describe()` table across all numeric columns
+- **One-click CSV Export** — Download the loaded dataset instantly
+
+### 📈 Analysis Tab
+- **Feature Distribution** — Histogram with marginal box-plot overlay (column-selectable)
+- **Correlation Heatmap** — Pearson correlation matrix, custom indigo→midnight→cyan scale
+- **Distribution Spread** — Coloured box + whisker plots for all numeric columns simultaneously
+- **Scatter Matrix** — Auto-rendered pairwise scatter for datasets with ≤6 numeric columns
+
+### 🤖 ML Engine Tab
+
+#### K-Means Clustering
+- StandardScaler preprocessing → K-Means++ init
+- Configurable K via interactive slider (2–10)
+- Donut chart — cluster size distribution
+- 2D scatter — cluster assignment visualisation (first two features)
+- **Elbow curve** — inertia vs K up to K+3, with a vertical dashed marker at selected K
+
+#### Linear Regression (OLS)
+- Target column selector
+- Large **R² score hero card** with quality label (Excellent / Good / Moderate)
+- Actual vs Predicted line chart (area fill, first 100 samples)
+- **Residuals scatter** — colour-mapped by magnitude (indigo → cyan)
+- **Feature coefficients bar chart** — red for negative, cyan for positive, sorted by |magnitude|
+
+---
+
+## 🛠 Tech Stack
+
+| Layer | Technology | Purpose |
 |---|---|---|
-| 📂 | **Universal Data Ingestion** | Drag-and-drop support for **CSV, Excel (.xlsx/.xls), and JSON** files. |
-| 🔍 | **Smart Data Inspection** | specific automatic detection of data types, missing values, and dataset shape. |
-| 🧠 | **ML-Powered Analysis** | Built-in **K-Means Clustering** for pattern detection and **Linear Regression** for trend prediction. |
-| 📊 | **Dynamic Visualization** | Interactive, responsive charts powered by **Chart.js** that adapt to the analysis context. |
-| ⚡ | **Real-Time Processing** | Powered by **FastAPI** for lightning-fast asynchronous data handling. |
-| 🎨 | **Modern UI/UX** | A sleek, dark-mode compatible interface built with vanilla CSS variables and glassmorphism design. |
-
----
-
-## 🛠️ Tech Stack
-
-| Layer | Technology | Usage |
-|-------|------------|-------|
-| **Backend API** | **FastAPI** | High-performance async REST API handling imports and computation. |
-| **Data Processing** | **Pandas & NumPy** | In-memory data manipulation, cleaning, and statistical operations. |
-| **Machine Learning** | **Scikit-Learn** | Algorithms for clustering (K-Means) and regression analysis. |
-| **Frontend** | **HTML5 / CSS3** | Custom-built responsive UI with CSS variables for easy theming. |
-| **Scripting** | **Vanilla JavaScript** | Asynchronous fetch requests and DOM manipulation. |
-| **Visualization** | **Chart.js** | Client-side rendering of interactive bar, line, and scatter charts. |
-
----
-
-## 🏗️ Architecture
-
-AADES follows a clean, single-page application (SPA) architecture with a decoupled backend:
-
-```mermaid
-graph TD
-    Client[Web Browser] -- Generic Upload --> API[FastAPI Server]
-    API -- Read/Parse --> Pandas[Pandas DataFrame]
-    Pandas -- Extract Features --> ML[Scikit-Learn Engine]
-    ML -- 1. Clustering --> KMeans[K-Means Model]
-    ML -- 2. Prediction --> LinReg[Linear Regression]
-    ML -- 3. Stats --> Correlations[Correlation Matrix]
-    
-    KMeans -- JSON Result --> API
-    LinReg -- JSON Result --> API
-    Correlations -- JSON Result --> API
-    
-    API -- JSON Response --> Client
-    Client -- Render --> Charts[Chart.js Visuals]
-```
+| **UI Framework** | Streamlit 1.35+ | App shell, widgets, routing |
+| **Styling** | Vanilla CSS · Space Grotesk · Inter · JetBrains Mono | Design system |
+| **Data Processing** | Pandas · NumPy | Ingestion, cleaning, stats |
+| **Machine Learning** | scikit-learn | KMeans, StandardScaler, LinearRegression |
+| **Visualisation** | Plotly (Express + Graph Objects) | All interactive charts |
+| **Runtime** | Python 3.11+ | Core language |
 
 ---
 
 ## ⚡ Quick Start
 
 ### Prerequisites
-- Python 3.10 or higher
-- pip (Python package manager)
+- Python 3.11 or higher
+- `pip` (Python package manager)
+- Git
 
-### Installation
+### 1. Clone the repository
+```bash
+git clone https://github.com/sarthak7-securtiy/Adaptive-Auto-Data-Evaluation-System.git
+cd Adaptive-Auto-Data-Evaluation-System
+```
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/sarthak7-securtiy/adaptive-data-analysis-system.git
-   cd adaptive-data-analysis-system
-   ```
+### 2. Create and activate a virtual environment
+```bash
+# Create
+python -m venv venv
 
-2. **Create a virtual environment**
-   ```bash
-   python -m venv venv
-   # Windows
-   venv\Scripts\activate
-   # macOS/Linux
-   source venv/bin/activate
-   ```
+# Activate — Windows
+venv\Scripts\activate
 
-3. **Install dependencies**
-   ```bash
-   pip install -r requirements.txt
-   ```
+# Activate — macOS / Linux
+source venv/bin/activate
+```
 
-4. **Run the Streamlit application**
-   ```bash
-   python -m streamlit run main.py
-   ```
+### 3. Install dependencies
+```bash
+pip install -r requirements.txt
+```
 
-5. **Access the Dashboard**
-   Open your browser and navigate to: `http://localhost:8501`
+### 4. Launch the app
+```bash
+python -m streamlit run main.py
+```
 
----
+### 5. Open in browser
+```
+http://localhost:8501
+```
 
-## 🎓 Capabilities
-
-The analytical engine (`main.py`) supports several modes of operation depending on the user's intent:
-
-1.  **Descriptive Statistics**: Automatically calculates means, medians, standard deviations, and data distribution.
-2.  **Correlation Analysis**: Identifies and quantifies relationships between numerical variables (e.g., "Feature A has a 0.85 correlation with Feature B").
-3.  **Pattern Clustering**: Uses Unsupervised Learning (K-Means) to group similar data points into clusters, useful for customer segmentation or anomaly grouping.
-4.  **Predictive Modeling**: Trains a lightweight Linear Regression model on-the-fly to predict the value of the last column based on previous columns.
+Upload any `.csv`, `.xlsx`, or `.json` file from the sidebar panel and the full analytics pipeline activates instantly.
 
 ---
 
-## 🔮 Future Enhancements
+## 🏗 Architecture
 
-- 💾 **Persistent Storage**: Integration with PostgreSQL/SQLite to save analysis history.
-- 🔐 **Authentication**: User accounts to secure private datasets.
-- 📄 **Report Generation**: Server-side PDF generation for downloadable business reports.
-- 🧹 **Advanced Data Cleaning**: UI tools for imputation and outlier removal.
+```mermaid
+graph TD
+    U[User — Browser] -->|Upload file| SB[Streamlit Sidebar]
+    SB -->|pandas.read_csv/excel/json| DF[DataFrame]
+
+    DF --> OV[Overview Tab]
+    DF --> AN[Analysis Tab]
+    DF --> ML[ML Engine Tab]
+
+    OV -->|head, dtypes, describe| T1[Tables & Schema]
+    AN -->|histogram, corr, box| V1[Plotly Charts]
+    AN -->|scatter_matrix| V2[Pairwise Scatter]
+
+    ML -->|StandardScaler + KMeans| CL[Clustering Engine]
+    ML -->|LinearRegression| RG[Regression Engine]
+
+    CL --> D1[Donut Chart]
+    CL --> D2[2D Scatter]
+    CL --> D3[Elbow Curve]
+
+    RG --> R1[R² Score Card]
+    RG --> R2[Actual vs Predicted]
+    RG --> R3[Residuals Plot]
+    RG --> R4[Coefficient Chart]
+```
 
 ---
 
+## 📁 Project Structure
+
+```
+Adaptive-Auto-Data-Evaluation-System/
+├── main.py                 # Single-file Streamlit app (UI + logic)
+├── requirements.txt        # Python dependencies
+├── .streamlit/
+│   └── config.toml         # Theme tokens (cyan / deep navy palette)
+├── docs/                   # Additional documentation assets
+├── .gitignore
+└── README.md
+```
+
+---
+
+## 📦 Dependencies
+
+```
+streamlit
+pandas
+numpy
+scikit-learn
+plotly
+openpyxl
+requests
+streamlit-lottie
+```
+
+Install all at once:
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+## 🔮 Roadmap
+
+| Status | Feature |
+|---|---|
+| ✅ | CSV / Excel / JSON ingestion |
+| ✅ | Schema inspector with missing % and sample values |
+| ✅ | Descriptive stats (transposed) |
+| ✅ | Correlation heatmap (Pearson) |
+| ✅ | Feature distribution histogram + box |
+| ✅ | Multi-column box plot overlay |
+| ✅ | Pairwise scatter matrix |
+| ✅ | K-Means++ clustering with elbow curve |
+| ✅ | Linear regression with residuals + coefficients |
+| ✅ | v2.0 glassmorphism UI with animated orbital empty state |
+| 🔲 | Categorical feature encoding & visualisation |
+| 🔲 | Random Forest / XGBoost model options |
+| 🔲 | PDF report export |
+| 🔲 | Persistent session history (SQLite) |
+| 🔲 | User authentication layer |
+
+---
 
 ## 📄 License
 
-This project is licensed under the **MIT License**.
+This project is licensed under the **MIT License** — free to use, fork, and extend.
+
+---
+
+<div align="center">
+  <sub>Built with ⚡ by <a href="https://github.com/sarthak7-securtiy">Sarthak</a> · AADES v2.0</sub>
+</div>
